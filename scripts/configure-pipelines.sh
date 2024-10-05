@@ -2,7 +2,7 @@
 
 # Constants
 DEFAULT_RHDH_DEPLOYMENT="backstage-ai-rh-developer-hub" # deployment created by rhdh operator by default
-PLUGIN_CONFIGMAP="backstage-dynamic-plugins-ai-rh-developer-hub" # configmap created by rhdh operator for plugins by default
+PLUGIN_CONFIGMAP="dynamic-plugins" # configmap created by rhdh operator for plugins by default
 CRD="tektonconfigs"
 
 # Variables

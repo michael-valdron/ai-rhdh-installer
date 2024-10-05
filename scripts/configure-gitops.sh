@@ -3,7 +3,7 @@
 ARGOCD_INSTANCE_PROVIDED=${ARGOCD_INSTANCE_PROVIDED:-false}
 NAMESPACE=${NAMESPACE:-"ai-rhdh"}
 RHDH_DEPLOYMENT="backstage-ai-rh-developer-hub" # deployment created by rhdh operator by default
-DEFAULT_PLUGIN_CONFIGMAP="backstage-dynamic-plugins-ai-rh-developer-hub" # configmap created by rhdh operator for plugins by default
+DEFAULT_PLUGIN_CONFIGMAP="dynamic-plugins" # configmap created by rhdh operator for plugins by default
 DEFAULT_SECRET_NAME="rhdh-argocd-secret"
 
 BASE_DIR="$(realpath $(dirname ${BASH_SOURCE[0]}))/.."
