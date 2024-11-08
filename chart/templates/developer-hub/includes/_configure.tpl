@@ -63,6 +63,13 @@
       done
       echo "OK"
 
+      echo -n "* Waiting for RHDH instance: "
+      until kubectl get deployment -n "$NAMESPACE" "backstage-${BACKSTAGE_CR_NAME}" -o jsonpath={.status.unavailableReplicas} >/dev/null 2>&1; do
+        echo -n "_"
+        sleep 2
+      done
+      echo "OK"
+
       echo -n "* Patching RHDH Default App Config: "
       APPCONFIG_DATA=$(mktemp)
       RHDH_URL="https://$(kubectl get route -n "$NAMESPACE" "backstage-${BACKSTAGE_CR_NAME}" --ignore-not-found -o jsonpath={.spec.host})"
