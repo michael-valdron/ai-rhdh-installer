@@ -3,6 +3,11 @@
 # Variables
 BASE_DIR="$(realpath $(dirname ${BASH_SOURCE[0]}))"
 
+# Debug
+if [ -n $DEBUG ] && [[ "${DEBUG}" == "1" ]]; then
+    set -x
+fi
+
 # Check for presence of private.env file
 if [ -f "$BASE_DIR/private.env" ]; then
     echo "... Sourcing private.env file found in repository root"

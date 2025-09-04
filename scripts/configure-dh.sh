@@ -476,6 +476,11 @@ configure_dh() {
     return 0
 }
 
+# Debug
+if [ -n $DEBUG ] && [[ "${DEBUG}" == "1" ]]; then
+    set -x
+fi
+
 # Configure Developer Hub
 configure_dh
 exit $?

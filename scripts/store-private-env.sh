@@ -27,6 +27,11 @@ VARS=(
     "RHDH_SIGNIN_PROVIDER"
 )
 
+# Debug
+if [ -n $DEBUG ] && [[ "${DEBUG}" == "1" ]]; then
+    set -x
+fi
+
 # Store a backup of the private.env file if it exists
 if [ -f "$BASE_DIR/private.env" ]; then
     cp $BASE_DIR/private.env $BASE_DIR/private.env.backup

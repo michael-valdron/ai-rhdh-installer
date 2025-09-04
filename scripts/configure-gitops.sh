@@ -8,6 +8,11 @@ DEFAULT_SECRET_NAME="rhdh-argocd-secret"
 
 BASE_DIR="$(realpath $(dirname ${BASH_SOURCE[0]}))/.."
 
+# Debug
+if [ -n $DEBUG ] && [[ "${DEBUG}" == "1" ]]; then
+    set -x
+fi
+
 # ArgoCD Instance Created By Installer
 if [[ $ARGOCD_INSTANCE_PROVIDED == "false" ]]; then
     # Add ConfigMap To Configure ArgoCD

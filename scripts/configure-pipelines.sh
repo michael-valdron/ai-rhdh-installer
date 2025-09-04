@@ -31,6 +31,11 @@ QUAY__DOCKERCONFIGJSON=${QUAY__DOCKERCONFIGJSON:-''}
 # Includes
 . ${INCLUDES_DIR}/webhooks # Include fetch function for getting webhook url
 
+# Debug
+if [ -n $DEBUG ] && [[ "${DEBUG}" == "1" ]]; then
+    set -x
+fi
+
 # Use existing variables if RHDH instance is provided
 if [[ $RHDH_INSTANCE_PROVIDED != "true" ]] && [[ $RHDH_INSTANCE_PROVIDED != "false" ]]; then
     echo "[FAIL] RHDH_INSTANCE_PROVIDED needs to be set to either 'true' or 'false'"
@@ -189,26 +194,6 @@ if [ "$(kubectl get secret -n "${PIPELINES_NAMESPACE}" "pipelines-as-code-secret
 fi
 echo "OK"
 
-# Fetching cosign public key
-# Fetches cosign public key needed for namespace setup
-echo -n "* Fetching cosign public key: "
-while ! kubectl get secrets -n openshift-pipelines signing-secrets >/dev/null 2>&1; do
-    echo -n "_"
-    sleep 2
-done
-echo -n "."
-COSIGN_SIGNING_PUBLIC_KEY=""
-while [ -z "${COSIGN_SIGNING_PUBLIC_KEY:-}" ]; do
-    echo -n "_"
-    sleep 2
-    COSIGN_SIGNING_PUBLIC_KEY=$(kubectl get secrets -n openshift-pipelines signing-secrets -o jsonpath='{.data.cosign\.pub}' 2>/dev/null)
-    if [ $? -ne 0 ]; then
-        echo -n "FAIL"
-        exit 1
-    fi
-done
-echo "OK"
-
 # Creating Namespace Setup Tekton Task Definition
 # Creates Tekton Task definition for creating custom namespaces with needed resources
 echo -n "* Creating Namespace Setup Tekton Task Definition: "
@@ -250,25 +235,6 @@ export TASK_SCRIPT="#!/usr/bin/env bash
 set -o errexit
 set -o nounset
 set -o pipefail
-
-SECRET_NAME=\"cosign-pub\"
-if [ -n \"$COSIGN_SIGNING_PUBLIC_KEY\" ]; then
-  echo -n \"* \$SECRET_NAME secret: \"
-  cat <<EOF | kubectl apply -f - >/dev/null
-apiVersion: v1
-data:
-  cosign.pub: $COSIGN_SIGNING_PUBLIC_KEY
-kind: Secret
-metadata:
-  labels:
-    app.kubernetes.io/instance: default
-    app.kubernetes.io/part-of: tekton-chains
-    operator.tekton.dev/operand-name: tektoncd-chains
-  name: \$SECRET_NAME
-type: Opaque
-EOF
-  echo \"OK\"
-fi
 
 SECRET_NAME=\"gitlab-auth-secret\"
 if [ -n \"\$GITLAB_TOKEN\" ]; then
